@@ -8,6 +8,8 @@ namespace LeanTick
         public bool enabled = true;
         public int ttl = 60;
         public bool jitter = true;
+        public bool perGiver = true;
+        public bool profiler = false;
 
         public override void ExposeData()
         {
@@ -15,6 +17,8 @@ namespace LeanTick
             Scribe_Values.Look(ref enabled, "enabled", true);
             Scribe_Values.Look(ref ttl, "ttl", 60);
             Scribe_Values.Look(ref jitter, "jitter", true);
+            Scribe_Values.Look(ref perGiver, "perGiver", true);
+            Scribe_Values.Look(ref profiler, "profiler", false);
             ttl = Mathf.Clamp(ttl, 10, 600);
         }
     }
@@ -22,6 +26,7 @@ namespace LeanTick
     public class LeanTickMod : Mod
     {
         public static LeanTickSettings Settings;
+        private Vector2 scroll;
 
         public LeanTickMod(ModContentPack content) : base(content)
         {
@@ -36,14 +41,17 @@ namespace LeanTick
         public override void DoSettingsWindowContents(Rect inRect)
         {
             var s = Settings;
+            var view = new Rect(0f, 0f, inRect.width - 20f, 1300f);
+            Widgets.BeginScrollView(inRect, ref scroll, view, true);
+
             var l = new Listing_Standard();
-            l.Begin(inRect);
+            l.Begin(view);
 
             l.CheckboxLabeled("Ativar cache de pesquisa de trabalho", ref s.enabled,
                 "Desligar devolve o comportamento original do jogo.");
             l.Gap();
 
-            l.Label("Intensidade (quanto tempo um colono sem trabalho espera até procurar de novo):");
+            l.Label("Intensidade (quanto tempo espera até procurar de novo):");
             if (l.ButtonText("Seguro: 20 ticks (0,3 s)")) s.ttl = 20;
             if (l.ButtonText("Equilibrado: 60 ticks (1 s)")) s.ttl = 60;
             if (l.ButtonText("Agressivo: 150 ticks (2,5 s)")) s.ttl = 150;
@@ -54,19 +62,42 @@ namespace LeanTick
             s.ttl = Mathf.RoundToInt(l.Slider(s.ttl, 10f, 600f));
             l.Gap();
 
+            l.CheckboxLabeled("Cache por tipo de trabalho (carregar, limpar, plantar...)", ref s.perGiver,
+                "Salta os tipos de trabalho que acabaram de falhar para este colono, mesmo que ele tenha outro trabalho. É a otimização com mais ganho.");
+            l.Gap(6f);
+
             l.CheckboxLabeled("Espalhar pesquisas no tempo (variação de até +25%)", ref s.jitter,
                 "Evita que muitos colonos voltem a pesquisar exatamente no mesmo tick.");
             l.Gap();
 
-            l.Label("Valores altos poupam mais CPU, mas um colono sem trabalho demora mais a reparar em trabalho novo. Trabalho de emergência nunca é atrasado.");
+            l.Label("Valores altos poupam mais CPU, mas um colono demora mais a reparar em trabalho novo. Trabalho de emergência nunca é atrasado.");
             l.Gap();
 
             long total = WorkSearchCache.Searched + WorkSearchCache.Skipped;
             string pct = total > 0 ? (100f * WorkSearchCache.Skipped / total).ToString("0.0") + "%" : "-";
-            l.Label("Estatísticas desde que o jogo arrancou: pesquisas feitas " + WorkSearchCache.Searched
-                    + ", evitadas " + WorkSearchCache.Skipped + " (" + pct + ")");
+            l.Label("Pesquisas completas: " + WorkSearchCache.Searched
+                    + " | evitadas (colono sem trabalho): " + WorkSearchCache.Skipped + " (" + pct + ")");
+            l.Label("Tipos de trabalho saltados pela cache por tipo: " + WorkSearchCache.GiverSkipped);
+            l.GapLine();
+
+            l.CheckboxLabeled("Medidor de tempo (precisa de reiniciar o jogo)", ref s.profiler,
+                "Mede quanto tempo o jogo gasta em cada sistema por tick. Tem algum custo de CPU, usa só para diagnosticar.");
+
+            if (Profiler.Active)
+            {
+                l.Gap(6f);
+                Text.Font = GameFont.Tiny;
+                foreach (string line in Profiler.BuildLines(14))
+                {
+                    l.Label(line);
+                }
+                Text.Font = GameFont.Small;
+                if (l.ButtonText("Zerar medições")) Profiler.Reset();
+                if (l.ButtonText("Escrever relatório completo no log")) Profiler.WriteLog();
+            }
 
             l.End();
+            Widgets.EndScrollView();
         }
     }
 }
