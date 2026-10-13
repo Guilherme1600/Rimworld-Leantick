@@ -1,0 +1,11 @@
+{
+  "version": 2,
+  "dgSpecHash": "FCzfeAYS3OM=",
+  "success": true,
+  "projectFilePath": "C:\\Users\\Guilherme Antonio\\Desktop\\LeanTick\\Source\\LeanTick.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\Guilherme Antonio\\.nuget\\packages\\microsoft.netframework.referenceassemblies\\1.0.3\\microsoft.netframework.referenceassemblies.1.0.3.nupkg.sha512",
+    "C:\\Users\\Guilherme Antonio\\.nuget\\packages\\microsoft.netframework.referenceassemblies.net48\\1.0.3\\microsoft.netframework.referenceassemblies.net48.1.0.3.nupkg.sha512"
+  ],
+  "logs": []
+}

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ModMetaData>
+  <name>LeanTick</name>
+  <author>Tu</author>
+  <packageId>leantick.optimizer</packageId>
+  <supportedVersions>
+    <li>1.6</li>
+  </supportedVersions>
+  <description>Mod minimalista de otimização. Quando um peão procura trabalho e não encontra nada, o resultado "sem trabalho" é reutilizado durante 60 ticks em vez de repetir a pesquisa completa. Trabalho de emergência nunca é afetado.</description>
+  <loadAfter>
+    <li>brrainz.harmony</li>
+  </loadAfter>
+</ModMetaData>

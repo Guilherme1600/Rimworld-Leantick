@@ -1,0 +1,5 @@
+C:\Users\Guilherme Antonio\Desktop\LeanTick\1.6\Assemblies\LeanTick.dll
+C:\Users\Guilherme Antonio\Desktop\LeanTick\Source\obj\Release\LeanTick.csproj.AssemblyReference.cache
+C:\Users\Guilherme Antonio\Desktop\LeanTick\Source\obj\Release\LeanTick.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Guilherme Antonio\Desktop\LeanTick\Source\obj\Release\LeanTick.csproj.CoreCompileInputs.cache
+C:\Users\Guilherme Antonio\Desktop\LeanTick\Source\obj\Release\LeanTick.dll
